@@ -51,7 +51,8 @@ body {
     
     /* Typography */
     --font-primary: 'Poppins', sans-serif;
-    --font-secondary: 'Inter';
+    --font-secondary: 'Inter',serif;
+    --font-serif-lux: 'Playfair Display', serif;
     
     --font-size-xs: 0.75rem;    /* 12px */
     --font-size-sm: 0.875rem;   /* 14px */
@@ -225,7 +226,7 @@ img {
     padding: 0.875rem 2rem;
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-2xl);
     cursor: pointer;
     transition: all var(--transition-base);
     border: 2px solid transparent;

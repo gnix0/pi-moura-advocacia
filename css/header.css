@@ -16,6 +16,8 @@
     box-shadow: var(--shadow-md);
 }
 
+
+
 .navbar {
     display: flex;
     align-items: center;
@@ -30,10 +32,12 @@
     align-items: center;
     gap: var(--spacing-xs);
     font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-md);
+    font-size: 1.2rem;
     color: var(--color-primary);
     cursor: pointer;
     transition: transform var(--transition-fast);
+
+    margin-left: -0.5rem;
 }
 
 .navbar__logo:hover {
@@ -48,10 +52,15 @@
 
 .navbar__logo-text {
     letter-spacing: 0.05em;
-    flex-direction:column;
-    font: var(--font-secondary);
+    display: flex;
     align-items: flex-start;
-    border: red 1px solid;
+    flex-direction:column;
+    font-family: var(--font-serif-lux);
+    font-size: 1.4rem;
+    align-items: flex-start;
+
+
+   
 }
 
 /* Menu */
@@ -73,6 +82,8 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     transition: color var(--transition-fast);
     position: relative;
+
+    white-space: nowrap;
 }
 
 .navbar__link::after {

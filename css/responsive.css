@@ -63,9 +63,9 @@
         height: 350px;
     }
     
-    .hero__buttons {
+    /* .hero__buttons {
         flex-direction: column;
-    }
+    } */
     
     .hero__buttons .btn {
         width: 100%;
