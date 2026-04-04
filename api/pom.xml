@@ -10,10 +10,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <model>model</model>
-    <model>application</model>
-    <model>adapter</model>
-    <model>bootstrap</model>
+    <module>model</module>
+    <module>application</module>
+    <module>adapter</module>
+    <module>bootstrap</module>
   </modules>
 
   <properties>
