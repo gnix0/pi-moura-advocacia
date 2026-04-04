@@ -1,31 +1,25 @@
-package com.mouraadvocacia.api.user;
+package com.mouraadvocacia.api.model.customer;
 
 import java.util.UUID;
 
-public class User {
+public class Customer {
 
     private final UUID id;
-    private String password;
     private String email;
     private String firstName;
     private String lastName;
+    private String phoneNumber;
 
-    public User(UUID id, String email, String firstName, String lastName) {
+    public Customer(UUID id, String email, String firstName, String lastName, String phoneNumber) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {
@@ -49,7 +43,15 @@ public class User {
         this.lastName = lastName;
     }
 
-    public static User createNew(String email, String firstName, String lastName) {
-        return new User(UUID.randomUUID(), email, firstName, lastName);
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public static Customer createNew(String email, String firstName, String lastName, String phoneNumber) {
+        return new Customer(UUID.randomUUID(), email, firstName, lastName, phoneNumber);
     }
 }
