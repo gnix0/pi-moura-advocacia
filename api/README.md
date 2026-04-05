@@ -4,7 +4,7 @@ Documentacao da API responsavel pela autenticacao de usuarios e pelo gerenciamen
 
 ## Visao geral
 
-A aplicacao foi desenvolvida em Java 21 com Spring Boot 3 e esta organizada como um projeto Maven multi-modulo. O modulo `bootstrap` sobe a aplicacao, enquanto `user` e `customer` concentram as funcionalidades de autenticacao e cadastro de clientes.
+A aplicacao foi desenvolvida em Java 21 com Spring Boot 3 e esta organizada em 3 modulos centrais. O modulo `bootstrap` sobe a aplicacao, enquanto `user` e `customer` concentram as funcionalidades de autenticacao e cadastro de clientes.
 
 Principais capacidades:
 
@@ -63,9 +63,19 @@ Modulo responsavel por autenticacao e usuarios.
 - resolucao do usuario autenticado
 - configuracao de seguranca stateless com Spring Security
 
-## Arquitetura
+## Arquitetura e Design 
 
-A API segue uma separacao inspirada em arquitetura hexagonal:
+A API segue foi desenvolvida seguindo uma arquitetura hexagonal, junto a principios de Domain-Driven Design (modulos funcionais funcionam como Bounded Contexts, por exemplo).
+
+O objetivo alcancado ao seguir tais padroes se justifica bem ao observarmos os tres principais ganhos listados abaixo:
+
+1. o design reflete com maior proximidade as regras de negocio, o que torna a manutencao mais simples ja que a base e construida sobre um entendimento solido das ditas regras
+2. a modularizacao decorrente destas escolhas reduz complexidade e acoplamento, aderindo a outros principios relevantes para uma arquitetura de qualidade, em especial, o Principio da Inversao de Dependencias (DIP)
+e o Principio da Segregacao de Intefaces (ISP)
+3. a combinacao dos dois ganhos citados acima traz uma alta flexibilidade e escalabilidade, i.e., o software se torna simples de ser mudado ao longo do tempo, assim como mais propenso a suportar maiores demandas
+e alteracoes decorrentes das mesmas
+
+Componentes centrais da arquitetura:
 
 - `adapter.inbound.rest`: controllers, requests, responses e mapeamentos da camada HTTP
 - `application.service`: implementacao dos casos de uso
