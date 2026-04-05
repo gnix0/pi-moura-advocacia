@@ -80,8 +80,8 @@ Componentes centrais da arquitetura:
 - `adapter.inbound.rest`: controllers, requests, responses e mapeamentos da camada HTTP
 - `application.service`: implementacao dos casos de uso
 - `domain.model`: entidades de dominio
-- `domain.port.inbound`: contratos de entrada dos casos de uso
-- `domain.port.outbound`: contratos de saida para persistencia e servicos externos
+- `domain.port.inbound`: contratos de entrada dos casos de uso (ou primary ports)
+- `domain.port.outbound`: contratos de saida para persistencia e servicos externos (ou secondary ports)
 - `adapter.outbound.persistence`: adaptadores JPA, entidades e repositories
 
 Fluxo resumido:
