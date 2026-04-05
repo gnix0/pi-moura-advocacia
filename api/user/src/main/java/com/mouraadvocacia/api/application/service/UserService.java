@@ -14,6 +14,7 @@ import com.mouraadvocacia.api.domain.port.inbound.RegisterUserUseCase;
 import com.mouraadvocacia.api.domain.port.outbound.TokenProviderPort;
 import com.mouraadvocacia.api.domain.port.outbound.UserRepositoryPort;
 import com.mouraadvocacia.api.exception.AuthenticationFailureException;
+import com.mouraadvocacia.api.exception.InvalidUserDataException;
 import com.mouraadvocacia.api.exception.UserAlreadyExistsException;
 
 @Service
@@ -92,27 +93,27 @@ public class UserService implements
 
     private void validateForRegistration(User user) {
         if (user == null) {
-            throw new AuthenticationFailureException("Os dados do usuario sao obrigatorios.");
+            throw new InvalidUserDataException("Os dados do usuario sao obrigatorios.");
         }
 
         if (isBlank(user.getFirstName())) {
-            throw new AuthenticationFailureException("O primeiro nome e obrigatorio.");
+            throw new InvalidUserDataException("O primeiro nome e obrigatorio.");
         }
 
         if (isBlank(user.getLastName())) {
-            throw new AuthenticationFailureException("O sobrenome e obrigatorio.");
+            throw new InvalidUserDataException("O sobrenome e obrigatorio.");
         }
 
         if (isBlank(user.getEmail())) {
-            throw new AuthenticationFailureException("O e-mail e obrigatorio.");
+            throw new InvalidUserDataException("O e-mail e obrigatorio.");
         }
 
         if (isBlank(user.getPassword())) {
-            throw new AuthenticationFailureException("A senha e obrigatoria.");
+            throw new InvalidUserDataException("A senha e obrigatoria.");
         }
 
         if (user.getPassword().trim().length() < 8) {
-            throw new AuthenticationFailureException("A senha deve ter pelo menos 8 caracteres.");
+            throw new InvalidUserDataException("A senha deve ter pelo menos 8 caracteres.");
         }
     }
 

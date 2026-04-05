@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mouraadvocacia.api.commmon.exception.GlobalException;
 import com.mouraadvocacia.api.commmon.exception.InvalidParameterException;
+import com.mouraadvocacia.api.commmon.exception.ResourceConflictException;
 import com.mouraadvocacia.api.commmon.exception.ResourceNotFoundException;
 import com.mouraadvocacia.api.domain.model.Customer;
 import com.mouraadvocacia.api.domain.port.inbound.CreateCustomerPort;
@@ -35,7 +36,7 @@ public class CustomerService implements
         validateCustomer(customer);
 
         if (customerRepositoryPort.existsByEmail(customer.getEmail().trim())) {
-            throw new InvalidParameterException("Ja existe um cliente cadastrado com este e-mail.");
+            throw new ResourceConflictException("Ja existe um cliente cadastrado com este e-mail.");
         }
 
         customer.setEmail(customer.getEmail().trim());
@@ -62,6 +63,7 @@ public class CustomerService implements
         Customer existingCustomer = customerRepositoryPort.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente nao encontrado."));
 
+        validateEmailConflict(id, customer);
         mergeCustomer(existingCustomer, customer);
         customerRepositoryPort.save(existingCustomer);
     }
@@ -114,6 +116,20 @@ public class CustomerService implements
         if (!isBlank(customer.getPhoneNumber())) {
             existingCustomer.setPhoneNumber(customer.getPhoneNumber().trim());
         }
+    }
+
+    private void validateEmailConflict(UUID customerId, Customer customer) {
+        if (isBlank(customer.getEmail())) {
+            return;
+        }
+
+        String normalizedEmail = customer.getEmail().trim();
+
+        customerRepositoryPort.findByEmail(normalizedEmail)
+                .filter(foundCustomer -> !foundCustomer.getId().equals(customerId))
+                .ifPresent(foundCustomer -> {
+                    throw new ResourceConflictException("Ja existe um cliente cadastrado com este e-mail.");
+                });
     }
 
     private boolean isBlank(String value) {

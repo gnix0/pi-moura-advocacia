@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mouraadvocacia.api.commmon.exception.InvalidParameterException;
+import com.mouraadvocacia.api.commmon.exception.ResourceConflictException;
 import com.mouraadvocacia.api.commmon.exception.ResourceNotFoundException;
 import com.mouraadvocacia.api.domain.model.Customer;
 import com.mouraadvocacia.api.domain.port.outbound.CustomerRepositoryPort;
@@ -52,8 +53,8 @@ class CustomerServiceTest {
 
         when(customerRepositoryPort.existsByEmail(customer.getEmail())).thenReturn(true);
 
-        InvalidParameterException exception = assertThrows(
-                InvalidParameterException.class,
+        ResourceConflictException exception = assertThrows(
+                ResourceConflictException.class,
                 () -> customerService.createCustomer(customer)
         );
 
@@ -90,6 +91,25 @@ class CustomerServiceTest {
         assertEquals("Silva", existingCustomer.getLastName());
         assertEquals("999999999", existingCustomer.getPhoneNumber());
         verify(customerRepositoryPort).save(existingCustomer);
+    }
+
+    @Test
+    void shouldRejectDuplicatedEmailWhenUpdatingCustomer() {
+        UUID customerId = UUID.randomUUID();
+        Customer existingCustomer = new Customer(customerId, "old@teste.com", "Ana", "Silva", "111111111");
+        Customer otherCustomer = new Customer(UUID.randomUUID(), "used@teste.com", "Bruno", "Souza", "222222222");
+        Customer updateCustomer = new Customer(null, "used@teste.com", null, null, null);
+
+        when(customerRepositoryPort.findById(customerId)).thenReturn(Optional.of(existingCustomer));
+        when(customerRepositoryPort.findByEmail("used@teste.com")).thenReturn(Optional.of(otherCustomer));
+
+        ResourceConflictException exception = assertThrows(
+                ResourceConflictException.class,
+                () -> customerService.updateCustomer(customerId, updateCustomer)
+        );
+
+        assertEquals("Ja existe um cliente cadastrado com este e-mail.", exception.getMessage());
+        verify(customerRepositoryPort, never()).save(existingCustomer);
     }
 
     @Test

@@ -22,6 +22,7 @@ import com.mouraadvocacia.api.domain.model.User;
 import com.mouraadvocacia.api.domain.port.outbound.TokenProviderPort;
 import com.mouraadvocacia.api.domain.port.outbound.UserRepositoryPort;
 import com.mouraadvocacia.api.exception.AuthenticationFailureException;
+import com.mouraadvocacia.api.exception.InvalidUserDataException;
 import com.mouraadvocacia.api.exception.UserAlreadyExistsException;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,5 +100,18 @@ class UserServiceTest {
         );
 
         assertEquals("E-mail ou senha invalidos.", exception.getMessage());
+    }
+
+    @Test
+    void shouldRejectInvalidRegistrationDataWithBadRequestSemantics() {
+        User user = User.createNew("advogado@teste.com", "Carlos", "Moura", "123");
+
+        InvalidUserDataException exception = assertThrows(
+                InvalidUserDataException.class,
+                () -> userService.register(user)
+        );
+
+        assertEquals("A senha deve ter pelo menos 8 caracteres.", exception.getMessage());
+        verify(userRepositoryPort, never()).save(any());
     }
 }

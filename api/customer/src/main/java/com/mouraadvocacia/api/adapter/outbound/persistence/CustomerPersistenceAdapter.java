@@ -52,6 +52,11 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
     }
 
     @Override
+    public Optional<Customer> findByEmail(String email) {
+        return repository.findByEmailIgnoreCase(email).map(mapper::toDomain);
+    }
+
+    @Override
     public Optional<Customer> findById(UUID id) {
         return repository.findById(id).map(mapper::toDomain);
     }

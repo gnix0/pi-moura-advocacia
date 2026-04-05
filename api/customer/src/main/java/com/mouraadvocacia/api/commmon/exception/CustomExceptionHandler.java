@@ -48,6 +48,17 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(details, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ResourceConflictException.class)
+    public ResponseEntity<ErrorDetails> resourceConflictException(
+            ResourceConflictException exception,
+            WebRequest request
+    ) {
+        ErrorDetails details = new ErrorDetails(new Date(), exception.getMessage(), request.getDescription(false));
+        logger.error(exception);
+
+        return new ResponseEntity<>(details, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDetails> methodArgumentNotValidException(
             MethodArgumentNotValidException exception,

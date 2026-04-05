@@ -34,6 +34,15 @@ public class UserExceptionHandler {
                 .body(new UserErrorDetails(new Date(), exception.getMessage(), request.getDescription(false)));
     }
 
+    @ExceptionHandler(InvalidUserDataException.class)
+    public ResponseEntity<UserErrorDetails> invalidUserDataException(
+            InvalidUserDataException exception,
+            WebRequest request
+    ) {
+        return ResponseEntity.badRequest()
+                .body(new UserErrorDetails(new Date(), exception.getMessage(), request.getDescription(false)));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<UserErrorDetails> methodArgumentNotValidException(
             MethodArgumentNotValidException exception,

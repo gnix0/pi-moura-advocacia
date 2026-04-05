@@ -16,6 +16,8 @@ public interface CustomerRepositoryPort {
 
     List<Customer> findByNameOrEmail(String query);
 
+    Optional<Customer> findByEmail(String email);
+
     Optional<Customer> findById(UUID id);
 
     void deleteById(UUID id);
