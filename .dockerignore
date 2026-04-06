@@ -1,0 +1,5 @@
+api/**/target/
+api/**/.mvn/
+**/bin/
+**/obj/
+.git
