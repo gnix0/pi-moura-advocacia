@@ -18,10 +18,18 @@ interface ProcessFormProps {
 	buttonLabel?: string;
 }
 
+const formatPrazo = (date: string) => {
+  if (!date) return "";
+	const [day, month, year] = date.split("/");
+	return `${year}-${month}-${day}`;
+};
+
+
 
 export type FormData = Omit<ProcessCard, "id">;
 
 export default function ProcessForm({ initialData, onSave, buttonLabel }: ProcessFormProps) {
+  console.log(initialData);
   const navigate = useNavigate();
   const {
 		register,
@@ -35,7 +43,7 @@ export default function ProcessForm({ initialData, onSave, buttonLabel }: Proces
 			titulo: initialData?.titulo || "",
 			numeroProcesso: initialData?.numeroProcesso || "",
 			cliente: initialData?.cliente || "",
-			prazo: initialData?.prazo || "",
+			prazo: formatPrazo(initialData?.prazo || ""),
 			comarca: initialData?.comarca || "",
 			categoria: initialData?.categoria || "Cível",
 			prioridade: initialData?.prioridade || "Média",
@@ -44,6 +52,7 @@ export default function ProcessForm({ initialData, onSave, buttonLabel }: Proces
 		},
   });
 
+  
   const categoria = watch("categoria");
   const prioridade = watch("prioridade");
   const instancia = watch("instancia");
