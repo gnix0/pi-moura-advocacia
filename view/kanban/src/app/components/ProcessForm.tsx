@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from 'react-router-dom';
 import { Label } from "./ui/label";
 import {
@@ -13,33 +13,48 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
 interface ProcessFormProps {
-  initialData?: ProcessCard;
-  onSubmit: (data: FormData) => void;
-  buttonLabel?: string;
+	initialData?: ProcessCard;
+	onSave: (data: Omit<ProcessCard, "id">) => void;
+	buttonLabel?: string;
 }
+
 
 export type FormData = Omit<ProcessCard, "id">;
 
-export default function ProcessForm({ initialData, onSubmit, buttonLabel }: ProcessFormProps) {
+export default function ProcessForm({ initialData, onSave, buttonLabel }: ProcessFormProps) {
   const navigate = useNavigate();
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<FormData>({
-    defaultValues: initialData ? initialData : {
-      titulo: '',
-      numeroProcesso: '',
-      cliente: '',
-      prazo: '',
-      comarca: '',
-      categoria: 'Cível',
-      prioridade: 'Média',
-      instancia: '1º Grau',
-      status: 'novos-casos'
-    }
+  const {
+		register,
+		handleSubmit,
+		setValue,
+		watch,
+		reset,
+		formState: { errors },
+  } = useForm<FormData>({
+		defaultValues: {
+			titulo: initialData?.titulo || "",
+			numeroProcesso: initialData?.numeroProcesso || "",
+			cliente: initialData?.cliente || "",
+			prazo: initialData?.prazo || "",
+			comarca: initialData?.comarca || "",
+			categoria: initialData?.categoria || "Cível",
+			prioridade: initialData?.prioridade || "Média",
+			instancia: initialData?.instancia || "1º Grau",
+			status: initialData?.status || "novos-casos",
+		},
   });
 
   const categoria = watch("categoria");
   const prioridade = watch("prioridade");
   const instancia = watch("instancia");
   const status = watch("status");
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    onSave(data);
+    reset();
+    navigate("/");
+  };
+
 
   const handleClose = () => {
     reset();
@@ -56,14 +71,12 @@ export default function ProcessForm({ initialData, onSubmit, buttonLabel }: Proc
 				<Label htmlFor="titulo">Ação / Assunto *</Label>
 				<Input
 					id="titulo"
-					{...register("titulo", { required: "Campo obrigatório" })}
+					{...register("titulo", { required: true })}
 					placeholder="Ex: Ação de Indenização, Divórcio Consensual"
 					className={errors.titulo ? "border-red-500" : ""}
 				/>
 				{errors.titulo && (
-					<p className="text-sm text-red-600">
-						{errors.titulo.message}
-					</p>
+					<p className="text-sm text-red-600">Campo obrigatório</p>
 				)}
 			</div>
 
@@ -73,15 +86,13 @@ export default function ProcessForm({ initialData, onSubmit, buttonLabel }: Proc
 				<Input
 					id="numeroProcesso"
 					{...register("numeroProcesso", {
-						required: "Campo obrigatório",
+						required: true,
 					})}
 					placeholder="0000000-00.0000.0.00.0000"
 					className={errors.numeroProcesso ? "border-red-500" : ""}
 				/>
 				{errors.numeroProcesso && (
-					<p className="text-sm text-red-600">
-						{errors.numeroProcesso.message}
-					</p>
+					<p className="text-sm text-red-600">Campo obrigatório</p>
 				)}
 			</div>
 
@@ -90,14 +101,12 @@ export default function ProcessForm({ initialData, onSubmit, buttonLabel }: Proc
 				<Label htmlFor="cliente">Cliente *</Label>
 				<Input
 					id="cliente"
-					{...register("cliente", { required: "Campo obrigatório" })}
+					{...register("cliente", { required: true })}
 					placeholder="Nome do cliente"
 					className={errors.cliente ? "border-red-500" : ""}
 				/>
 				{errors.cliente && (
-					<p className="text-sm text-red-600">
-						{errors.cliente.message}
-					</p>
+					<p className="text-sm text-red-600">Campo obrigatório</p>
 				)}
 			</div>
 
@@ -111,14 +120,12 @@ export default function ProcessForm({ initialData, onSubmit, buttonLabel }: Proc
 						id="prazo"
 						type="date"
 						{...register("prazo", {
-							required: "Campo obrigatório",
+							required: true,
 						})}
 						className={errors.prazo ? "border-red-500" : ""}
 					/>
 					{errors.prazo && (
-						<p className="text-sm text-red-600">
-							{errors.prazo.message}
-						</p>
+						<p className="text-sm text-red-600">Campo obrigatório</p>
 					)}
 				</div>
 
@@ -127,15 +134,13 @@ export default function ProcessForm({ initialData, onSubmit, buttonLabel }: Proc
 					<Input
 						id="comarca"
 						{...register("comarca", {
-							required: "Campo obrigatório",
+							required: true,
 						})}
 						placeholder="Ex: 3ª Vara Cível"
 						className={errors.comarca ? "border-red-500" : ""}
 					/>
 					{errors.comarca && (
-						<p className="text-sm text-red-600">
-							{errors.comarca.message}
-						</p>
+						<p className="text-sm text-red-600">Campo obrigatório</p>
 					)}
 				</div>
 			</div>
@@ -228,19 +233,22 @@ export default function ProcessForm({ initialData, onSubmit, buttonLabel }: Proc
 						</SelectItem>
 					</SelectContent>
 				</Select>
-      </div>
-      <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              {buttonLabel || "Salvar"}
-            </Button>
-        </div>
+			</div>
+			<div className="flex justify-end gap-3 pt-4 border-t">
+				<Button
+					type="button"
+					variant="outline"
+					onClick={handleClose}
+				>
+					Cancelar
+				</Button>
+				<Button
+					type="submit"
+					className="bg-blue-600 hover:bg-blue-700"
+				>
+					{buttonLabel || "Salvar"}
+				</Button>
+			</div>
 		</form>
 	);
 }

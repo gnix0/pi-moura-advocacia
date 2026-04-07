@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 interface ProcessCardProps {
 	process: ProcessCard;
 	onEdit: (process: ProcessCard) => void;
-	onDelete: (process: ProcessCard) => void;
+	onDelete: (id: string) => void;
 }
 
 export function ProcessCardComponent({

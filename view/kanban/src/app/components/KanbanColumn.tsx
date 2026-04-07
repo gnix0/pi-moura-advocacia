@@ -7,7 +7,7 @@ interface KanbanColumnProps {
 	processes: ProcessCard[];
 	onMoveCard: (cardId: string, targetColumnId: string) => void;
 	onEditCard: (card: ProcessCard) => void;
-	onDeleteCard: (card: ProcessCard) => void;
+	onDeleteCard: (id: string) => void;
 }
 
 export function KanbanColumn({

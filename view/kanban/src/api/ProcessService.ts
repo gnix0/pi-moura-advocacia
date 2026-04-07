@@ -5,31 +5,26 @@ const api = axios.create({
 	baseURL: "http://localhost:3000",
 });
 
-function normalizeProcesses(payload: unknown): ProcessCard[] {
-	if (Array.isArray(payload)) {
-		return payload as ProcessCard[];
-	}
-
-	if (payload && typeof payload === "object") {
-		const objectPayload = payload as Record<string, unknown>;
-
-		if (Array.isArray(objectPayload.processes)) {
-			return objectPayload.processes as ProcessCard[];
-		}
-
-		if (Array.isArray(objectPayload.data)) {
-			return objectPayload.data as ProcessCard[];
-		}
-
-		if (Array.isArray(objectPayload.content)) {
-			return objectPayload.content as ProcessCard[];
-		}
-	}
-
-	return [];
-}
-
 export async function getProcesses(): Promise<ProcessCard[]> {
 	const response = await api.get("/processes");
 	return response.data;
+}
+
+export async function getProcessById(id: string): Promise<ProcessCard> {
+  const response = await api.get(`/processes/${id}`);
+  return response.data;
+}
+
+export async function createProcess(data: Omit<ProcessCard, "id">): Promise<ProcessCard> {
+  const response = await api.post("/processes", data);
+  return response.data;
+}
+
+export async function updateProcess(id: string, data: Partial<ProcessCard>): Promise<ProcessCard> {
+  const response = await api.put(`/processes/${id}`, data);
+  return response.data;
+}
+
+export async function deleteProcess(id: string): Promise<void> {
+  await api.delete(`/processes/${id}`);
 }
