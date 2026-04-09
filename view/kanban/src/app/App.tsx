@@ -1,13 +1,14 @@
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { KanbanBoard } from './components/KanbanBoard';
+import Home from './pages/Home';
+import { Route, Routes } from 'react-router-dom';
+import NewProcess from './pages/NewProcess';
+import EditProcess from './pages/EditProcess';
 
 export default function App() {
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen bg-gray-50">
-        <KanbanBoard />
-      </div>
-    </DndProvider>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/novo-processo" element={<NewProcess />} />
+      <Route path="/editar/:id" element={<EditProcess />} />
+    </Routes>
   );
 }

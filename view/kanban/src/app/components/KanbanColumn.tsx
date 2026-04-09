@@ -1,33 +1,43 @@
-import { useDrop } from 'react-dnd';
-import { Column, ProcessCard } from '../types/kanban';
-import { ProcessCardComponent } from './ProcessCard';
+import { useDrop } from "react-dnd";
+import { Column, ProcessCard } from "../types/kanban";
+import { ProcessCardComponent } from "./ProcessCard";
 
 interface KanbanColumnProps {
-  column: Column;
-  onMoveCard: (cardId: string, targetColumnId: string) => void;
-  onEditCard: (card: ProcessCard) => void;
-  onDeleteCard: (card: ProcessCard) => void;
+	column: Column;
+	processes: ProcessCard[];
+	onDropCard: (processId: string, newStatus: string) => void;
+	onDragStart: (
+		event: React.DragEvent<HTMLDivElement>,
+		process: ProcessCard,
+	) => void;
+	onDeleteCard: (id: string) => void;
 }
 
-export function KanbanColumn({ column, onMoveCard, onEditCard, onDeleteCard }: KanbanColumnProps) {
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'CARD',
-    drop: (item: { id: string }) => {
-      onMoveCard(item.id, column.id);
-    },
-    collect: monitor => ({
-      isOver: !!monitor.isOver(),
-    }),
-  }));
+export function KanbanColumn({
+	column,
+	processes,
+	onDropCard,
+	onDragStart,
+	onDeleteCard,
+}: KanbanColumnProps) {
+	function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+		event.preventDefault();
+	}
 
-  return (
+	function handledrop(event: React.DragEvent<HTMLDivElement>) {
+		event.preventDefault();
+		const processId = event.dataTransfer.getData("processId");
+		if (processId) {
+			console.log(processId);
+			onDropCard(processId, column.id);
+		}
+	}
+
+	return (
 		<div
-			ref={(node) => {
-				drop(node);
-			}}
-			className={`flex-shrink-0 w-80 flex flex-col bg-stone-100 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.30)] rounded-lg transition-colors ${
-				isOver ? "bg-blue-50 ring-2 ring-blue-400" : ""
-			}`}
+			onDragOver={handleDragOver}
+			onDrop={handledrop}
+			className={`flex-shrink-0 w-80 flex flex-col bg-stone-100 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.30)] rounded-lg transition-colors `}
 		>
 			{/* Column Header */}
 			<div className="px-4 py-3 border-b  rounded-t-lg">
@@ -36,27 +46,27 @@ export function KanbanColumn({ column, onMoveCard, onEditCard, onDeleteCard }: K
 						{column.title}
 					</h2>
 					<span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
-						{column.cards.length}
+						{processes.length}
 					</span>
 				</div>
 			</div>
 
 			{/* Cards Container */}
 			<div className="flex-1 overflow-y-auto p-3 space-y-3">
-				{column.cards.map((card) => (
+				{processes.map((card) => (
 					<ProcessCardComponent
 						key={card.id}
-						card={card}
-						onEdit={onEditCard}
+						process={card}
+						onDragStart={onDragStart}
 						onDelete={onDeleteCard}
 					/>
 				))}
-				{column.cards.length === 0 && (
+				{processes.length === 0 && (
 					<div className="text-center py-8 text-gray-400 text-sm">
 						Nenhum processo nesta fase
 					</div>
 				)}
 			</div>
 		</div>
-  );
+	);
 }

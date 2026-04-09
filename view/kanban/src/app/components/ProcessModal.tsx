@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { ProcessCard, AreaDireito, Urgencia, Instancia } from '../types/kanban';
+import { ProcessCard, Categoria, Prioridade, Instancia } from '../types/kanban';
 
 interface ProcessModalProps {
   isOpen: boolean;
@@ -15,27 +15,27 @@ interface ProcessModalProps {
   mode: 'create' | 'edit';
 }
 
-type FormData = Omit<ProcessCard, 'id'>;
+export type FormData = Omit<ProcessCard, 'id'>;
 
-export function ProcessModal({ isOpen, onClose, onSave, initialData, mode }: ProcessModalProps) {
+export function ProcessModal({ isOpen, onClose, onSave, mode }: ProcessModalProps) {
   const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<FormData>({
-    defaultValues: initialData || {
+    defaultValues: {
       titulo: '',
       numeroProcesso: '',
       cliente: '',
       prazo: '',
-      varaComarca: '',
-      areaDireito: 'Cível',
-      urgencia: 'Média',
+      comarca: '',
+      categoria: 'Cível',
+      prioridade: 'Média',
       instancia: '1º Grau',
-      columnId: 'novos-casos'
+      status: 'novos-casos'
     }
   });
 
-  const areaDireito = watch('areaDireito');
-  const urgencia = watch('urgencia');
+  const categoria = watch('categoria');
+  const prioridade = watch('prioridade');
   const instancia = watch('instancia');
-  const columnId = watch('columnId');
+  const status = watch('status');
 
   const onSubmit = (data: FormData) => {
     onSave(data);
@@ -116,15 +116,15 @@ export function ProcessModal({ isOpen, onClose, onSave, initialData, mode }: Pro
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="varaComarca">Vara / Comarca *</Label>
+              <Label htmlFor="comarca">Vara / Comarca *</Label>
               <Input
-                id="varaComarca"
-                {...register('varaComarca', { required: 'Campo obrigatório' })}
+                id="comarca"
+                {...register('comarca', { required: 'Campo obrigatório' })}
                 placeholder="Ex: 3ª Vara Cível"
-                className={errors.varaComarca ? 'border-red-500' : ''}
+                className={errors.comarca ? 'border-red-500' : ''}
               />
-              {errors.varaComarca && (
-                <p className="text-sm text-red-600">{errors.varaComarca.message}</p>
+              {errors.comarca && (
+                <p className="text-sm text-red-600">{errors.comarca.message}</p>
               )}
             </div>
           </div>
@@ -133,8 +133,8 @@ export function ProcessModal({ isOpen, onClose, onSave, initialData, mode }: Pro
           <div className="space-y-2">
             <Label>Área do Direito *</Label>
             <Select
-              value={areaDireito}
-              onValueChange={(value) => setValue('areaDireito', value as AreaDireito)}
+              value={categoria}
+              onValueChange={(value) => setValue('categoria', value as Categoria)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -153,8 +153,8 @@ export function ProcessModal({ isOpen, onClose, onSave, initialData, mode }: Pro
           <div className="space-y-2">
             <Label>Urgência / Prioridade *</Label>
             <Select
-              value={urgencia}
-              onValueChange={(value) => setValue('urgencia', value as Urgencia)}
+              value={prioridade}
+              onValueChange={(value) => setValue('prioridade', value as Prioridade)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -190,8 +190,8 @@ export function ProcessModal({ isOpen, onClose, onSave, initialData, mode }: Pro
           <div className="space-y-2">
             <Label>Status do Processo *</Label>
             <Select
-              value={columnId}
-              onValueChange={(value) => setValue('columnId', value)}
+              value={status}
+              onValueChange={(value) => setValue('status', value)}
             >
               <SelectTrigger>
                 <SelectValue />
